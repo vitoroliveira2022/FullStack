@@ -1,0 +1,22 @@
+.organizaAnimes{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap; /* para quebrar linha */
+}
+
+.organizaInfo{
+    text-align: center;
+    font-size: 14px;
+    width: 25%;
+
+}
+
+.bt{
+    margin: 5px;
+}
+.imagemAnime {
+    width: 150px;
+    height: auto;
+    margin-top: 5px;
+}
+
