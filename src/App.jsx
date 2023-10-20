@@ -1,13 +1,20 @@
+import { BrowserRouter as Router,Routes, Route} from 'react-router-dom'; // importei e uso tudo aqui
 
-import './App.css';
-import ApiAnime from './componentes/ApiAnime';
+import Home from './componentes/pages/Home'; // importou o componente (pagina)
+import Navbar from './componentes/Navbar'; // importou o componente (pagina)
+import PesquisarAnime from './componentes/pages/PesquisarAnime';
+import Footer from './componentes/Footer';
 
 function App() {
   return (
-    <div className="App">
-      <h1>Olá bem vindo a minha pagina !</h1>
-     <ApiAnime></ApiAnime>
-    </div>
+    <Router>
+      <Navbar></Navbar>
+      <Routes>
+        <Route path="/" element={<Home></Home>} />
+        <Route path="/pesquisarAnime" element={<PesquisarAnime></PesquisarAnime>} />
+      </Routes>
+      <Footer></Footer>
+    </Router>
   );
 }
 

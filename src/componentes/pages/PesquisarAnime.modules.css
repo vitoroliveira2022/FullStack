@@ -1,0 +1,18 @@
+.divPai{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap; /* para quebrar linha */
+}
+
+.divFilha{
+    text-align: center;
+    font-size: 14px;
+    width: 25%;
+    margin-bottom: 30px;
+    margin-top: 30px;
+}
+
+.btExcluir{
+    padding: 10px;
+    margin-bottom: 20px;
+}
