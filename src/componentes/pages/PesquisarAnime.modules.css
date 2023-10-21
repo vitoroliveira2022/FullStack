@@ -1,22 +1,18 @@
-.organizaAnimes{
+.divPai{
     display: flex;
     flex-direction: row;
     flex-wrap: wrap; /* para quebrar linha */
 }
 
-.organizaInfo{
+.divFilha{
     text-align: center;
     font-size: 14px;
     width: 25%;
-
+    margin-bottom: 30px;
+    margin-top: 30px;
 }
 
-.bt{
-    margin: 5px;
+.btExcluir{
+    padding: 10px;
+    margin-bottom: 20px;
 }
-.imagemAnime {
-    width: 150px;
-    height: auto;
-    margin-top: 5px;
-}
-
