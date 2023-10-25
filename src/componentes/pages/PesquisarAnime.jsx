@@ -1,57 +1,83 @@
-import { useState } from "react";
-import BotaoPesquisar from './BotaoPesquisar';
+import React, { useState, useEffect, useMemo } from "react";
 import MostraDados from "./MostraDados";
-import axios from 'axios';
-import './PesquisarAnime.modules.css'; // importei o CSS desse elemento
+import axios from "axios";
+import './PesquisarAnime.modules.css';
+import Mensagem from "./Mensagem";
 
-function PesquisarAnime(){ 
-    const [anime,setAnime] = useState(); // para o anime que digitar
-    const [animes, setAnimes] = useState([]); // para todos os animes
+function PesquisarAnime() { 
+    // criando as variaveis de estado e as funções para atualizar elas
+    const [anime, setAnime] = useState(); // vai nascer com valor inicial undefined
+    const [animes, setAnimes] = useState([]); // cria um array para guardar os animes
+    const [mensagem, setMensagem] = useState(); 
 
-    function pesquisandoAnime(){
-        axios.get('https://api.jikan.moe/v4/anime?q='+anime+'&sfw') // faz a requisição de acordo com o anime q digitar
-            .then((res)=>{
-                const novoAnime = {
-                    imagem: res.data.data[0].images.jpg.image_url,
-                    titulo: res.data.data[0].title,
-                    ano: res.data.data[0].year,
-                    episodios: res.data.data[0].episodes
-                };
-                setAnimes(animesAntigos => [...animesAntigos, novoAnime]); // coloca anime na lista de animes
-            }).catch((erro)=>{
-                console.log(erro)
-            })           
+    useEffect(() => { // para chamar a função pesquisandoAnime sempre que a variável de estado 'anime' for alterada
+        pesquisandoAnime();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [anime]);
+
+    async function pesquisandoAnime() {
+        try {
+            // Quando abrir a pagina n vai entrar aqui, o valor da variavel de estado 'anime' (input) estará 'undefined', mas entra ao digitar e depois deixar vazio o input ;
+            if (anime === "") { 
+                setAnimes([]); // limpa o array de animes (variavel de estado 'animes')
+                setMensagem('Digite um nome de anime !');
+                return;
+            }
+            const res = await axios.get('https://api.jikan.moe/v4/anime?q=' + anime + '&sfw'); // faz a requisição de acordo com o valor da variavel de estado 'anime'
+            if (res.data.data.length > 0) { // se a API retorna algum dado
+                const novosAnimes = res.data.data.map(animeData => ({ // cria um array de animes, onde cada elemento do array é um objeto que representa um anime
+                    imagem: animeData.images.jpg.image_url,
+                    titulo: animeData.title,
+                    ano: animeData.year,
+                    episodios: animeData.episodes
+                }));
+
+                // filtra o array de animes e cria um array só com os animes não repetidos
+                const animesUnicos = novosAnimes.filter(novoAnime => {
+                    return !animes.some(a => a.titulo === novoAnime.titulo);
+                });
+
+                if (animesUnicos.length > 0) { // se o array de animes únicos tiver algum elemento
+                    setAnimes([...animes, ...animesUnicos]); // adicionar esses elementos ao array 'animes' (variavel de estado 'animes')
+                    setMensagem(''); 
+                } 
+            }
+            
+        } catch (erro) {
+            console.log(erro);
+        }
     }
 
-    function excluirAnime(index) {
-        setAnimes(animesAntigos => animesAntigos.filter((anime, i) => i !== index)); // exclui anime por seu index
+    
+      
+    const mostraDadosComponents = useMemo(() => {
+    if (anime && anime.length > 0) { // se a variavel de estado 'anime' não estiver vazia
+        // filtra a lista de animes para incluir só os animes que o título começa com o valor da variável de estado 'anime' (substring)
+        // depois mapeia cada anime filtrado para um componente 'MostraDados' criando uma lista de componentes 'MostraDados' que
+        // vão ser renderizados 
+        return animes.filter(a => a.titulo.toLowerCase().substring(0, anime.length) === anime.toLowerCase()).map((anime, index) => 
+            <MostraDados 
+                key={index} 
+                url_img={anime.imagem} 
+                titulo={anime.titulo} 
+                ano={anime.ano} 
+                ep={anime.episodios}
+            ></MostraDados>
+        )
     }
+}, [animes, anime]);
 
-    // na linha 41 estou passando o evento (função pesquisandoAnime) e o conteudo interno do botao via props para
-    // o elemento BotaoPesquisar
-
-    // na linha 43 eu percorro todo o array de animes e mostro cada anime (renderiza MostraDados para cada anime)
-
-    // na linhas 45 a 50 eu passo os dados da API via props, inclusive uma função para o elemento MostraDados
     return (
         <div>
-            <h2>Pesquisando animes</h2>
+            <h2>Lista de animes: </h2>
             <label>Digite o nome do anime: </label>
-            <input type="text" onChange={(e)=>setAnime(e.target.value)}/>
-            <BotaoPesquisar event={pesquisandoAnime} text="Pesquisar" />
+            <input type="text" onChange={(e) => setAnime(e.target.value)}/>
+            {mensagem && <Mensagem texto={mensagem} />} {/* renderizando componente de forma condicional */}
             <div className="divPai">
-                {animes.map((anime, index) => 
-                    <MostraDados 
-                        key={index} 
-                        url_img={anime.imagem} 
-                        titulo={anime.titulo} 
-                        ano={anime.ano} 
-                        ep={anime.episodios}
-                        excluirAnime={() => excluirAnime(index)}
-                     ></MostraDados>
-                )}
+                {mostraDadosComponents}
             </div>
         </div>
-    )
+    );
 }
+
 export default PesquisarAnime;
