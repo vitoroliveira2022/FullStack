@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/vitoroliveira2022/FullStack/static/css/main.0da1f04c.css",
-    "main.js": "/vitoroliveira2022/FullStack/static/js/main.4f6eff5b.js",
-    "static/js/787.37c46113.chunk.js": "/vitoroliveira2022/FullStack/static/js/787.37c46113.chunk.js",
-    "index.html": "/vitoroliveira2022/FullStack/index.html",
-    "main.0da1f04c.css.map": "/vitoroliveira2022/FullStack/static/css/main.0da1f04c.css.map",
-    "main.4f6eff5b.js.map": "/vitoroliveira2022/FullStack/static/js/main.4f6eff5b.js.map",
-    "787.37c46113.chunk.js.map": "/vitoroliveira2022/FullStack/static/js/787.37c46113.chunk.js.map"
+    "main.css": "/FullStack/static/css/main.0da1f04c.css",
+    "main.js": "/FullStack/static/js/main.735953c7.js",
+    "static/js/787.37c46113.chunk.js": "/FullStack/static/js/787.37c46113.chunk.js",
+    "index.html": "/FullStack/index.html",
+    "main.0da1f04c.css.map": "/FullStack/static/css/main.0da1f04c.css.map",
+    "main.735953c7.js.map": "/FullStack/static/js/main.735953c7.js.map",
+    "787.37c46113.chunk.js.map": "/FullStack/static/js/787.37c46113.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.0da1f04c.css",
-    "static/js/main.4f6eff5b.js"
+    "static/js/main.735953c7.js"
   ]
 }
