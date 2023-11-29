@@ -1,7 +1,0 @@
-.divPai{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap; /* para quebrar linha */
-}
-
-
