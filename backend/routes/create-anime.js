@@ -1,14 +1,14 @@
 // Importação do módulo Router do Express para definir rotas
 const router = require('express').Router();
 
-// Importação do controller responsável por manipular operações relacionadas a logs
-const LogController = require('../controllers/LogController');
-
 // Importação do módulo jsonwebtoken para manipulação de tokens JWT
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
 // Configuração do dotenv para carregar variáveis de ambiente do arquivo .env
 require("dotenv").config();
+
+// Importação do controller responsável pela criação de animes
+const CreateAnimeController = require('../controllers/CreateAnimeController');
 
 // Middleware para verificação e validação do token JWT
 function checkToken(req, res, next){
@@ -37,8 +37,8 @@ function checkToken(req, res, next){
     }
 }
 
-// Rota que aciona o controller para realizar uma busca nos logs, usando o middleware de verificação de token
-router.post('/logSearch', checkToken, LogController.logSearch);
+// Rota que aciona o controller para criar um novo anime, usando o middleware de verificação de token
+router.post('/createAnime', checkToken, CreateAnimeController.createAnime);
 
 // Exportação do objeto router para ser utilizado no arquivo server.js
 module.exports = router;

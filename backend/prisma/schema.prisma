@@ -19,6 +19,17 @@ model User {
   @@map("users")
 }
 
+model Anime {
+  id            String @id @default(uuid())
+  nome          String
+  genero        String
+  quantidade_ep String
+
+  created_at DateTime @default(now())
+
+  @@map("animes")
+}
+
 model Log {
   id         String   @id @default(uuid())
   busca      String

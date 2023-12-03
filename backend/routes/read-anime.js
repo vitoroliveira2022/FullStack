@@ -1,14 +1,23 @@
 // Importação do módulo Router do Express para definir rotas
 const router = require('express').Router();
 
-// Importação do controller responsável por manipular operações relacionadas a logs
-const LogController = require('../controllers/LogController');
+// Importação do controller responsável por manipular operações relacionadas a leitura de animes
+const ReadAnimeController = require('../controllers/ReadAnimeController');
 
 // Importação do módulo jsonwebtoken para manipulação de tokens JWT
 const jwt = require("jsonwebtoken");
 
+// Importação do módulo createClient do redis para trabalhar com cache
+const { createClient } = require('redis');
+
+// Criação de uma instância do cliente Redis
+const client = createClient();
+
 // Configuração do dotenv para carregar variáveis de ambiente do arquivo .env
 require("dotenv").config();
+
+// Tratamento de erros do cliente Redis
+client.on('error', err => console.log('Redis Client Error', err));
 
 // Middleware para verificação e validação do token JWT
 function checkToken(req, res, next){
@@ -37,8 +46,13 @@ function checkToken(req, res, next){
     }
 }
 
-// Rota que aciona o controller para realizar uma busca nos logs, usando o middleware de verificação de token
-router.post('/logSearch', checkToken, LogController.logSearch);
+// Função assíncrona para iniciar a rota de leitura de animes com suporte a cache
+async function iniciarRotaCache(){
+    router.get('/readAnime/:userName', checkToken, ReadAnimeController.readAnime);
+}
+
+// Chama a função para iniciar a rota com cache
+iniciarRotaCache();
 
 // Exportação do objeto router para ser utilizado no arquivo server.js
 module.exports = router;

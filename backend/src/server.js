@@ -1,48 +1,63 @@
+// Importação das dependências necessárias
 const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
+const cors = require("cors"); // Importação do pacote CORS para lidar com política de mesma origem
+
+const consumeAnimeMessage = require('../rabitmq/animeConsumer');
+const consumeLogMessage = require('../rabitmq/LogConsumer');
+
+
+
+// Consumo de mensagens relacionadas a animes e logs
+consumeAnimeMessage();
+consumeLogMessage();
+
+// Definição da porta do servidor
+const PORT = process.env.PORT || 3004;
+
+// Criação de uma instância do Express
 const app = express();
 
-const server = require('node:http').createServer(app);
-const io = require('socket.io')(server, {cors: {origin: 'http://localhost:3000'}});
-
-
-
-const prisma = require('./Client/PrismaClient');
-require('dotenv').config();
-const cors = require('cors')
-const PORT = process.env.PORT || 3004;
+// Configuração do CORS para permitir requisições de origens diferentes
+app.use(cors());
 app.use(express.json());
 
-
-
-app.use(cors())
-
-const createUser = require('../routes/create-user')
-const readUsers = require('../routes/read-users');
+// Importação de rotas
+const createAnime = require('../routes/create-anime');
+const readAnime = require('../routes/read-anime');
 const login = require('../routes/login-router');
 const log = require('../routes/log-router');
 
-
-
-app.use('/create', createUser);
+// Utilização das rotas definidas
+app.use('/create', createAnime);
 app.use('/login', login);
-app.use('/read', readUsers);
+app.use('/read', readAnime);
 app.use('/logsearch', log);
 
-// Realizando a conexão com o socket io e verificando o acesso no frontend
-io.on('connection', socket => {
-    console.log('Usuario conectado!', socket.id);
-    socket.on('disconnect', reason => {
-        console.log('Usuário desconectado!', socket.id);
-    })
-    socket.on('set_username', username => {
-        socket.data.username = username
-        console.log(socket.data.username)
-    })
-})
+// Criação do servidor HTTP usando o Express
+const server = http.createServer(app);
 
+// Configuração do Socket.IO para usar o servidor HTTP e permitir conexões do frontend
+const io = new Server(server, {
+  cors: { origin: "http://localhost:3000" },
+});
 
+// Lida com eventos de conexão, desconexão e customizados dos clientes Socket.IO
+io.on("connection", (socket) => {
+  console.log("Usuário conectado!", socket.id);
 
+  socket.on("disconnect", (reason) => {
+    console.log("Usuário desconectado!", socket.id);
+  });
 
-   
-server.listen(PORT, console.log(`Connected in port: ${PORT}`));
+  socket.on("set_username", (username) => {
+    socket.data.username = username;
+    console.log(socket.data.username);
+  });
+});
 
+// Inicia o servidor na porta especificada
+server.listen(PORT, () => {
+  console.log(`Servidor HTTP está sendo executado na porta ${PORT}`);
+});
